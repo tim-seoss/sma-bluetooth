@@ -1478,10 +1478,11 @@ int main(int argc, char **argv)
            update_almanac(  &conf, sunrise_time, sunset_time );
         }
     }
-    if( mysql==1 ) 
+    if( mysql==1 ) {
         if( debug == 1 ) printf( "Before Check Schema\n" ); 
        	if( check_schema( &conf, SCHEMA, debug ) != 1 )
             exit(-1);
+    }
     if(daterange==0 ) { //auto set the dates
         if( debug == 1 ) printf( "auto_set_dates\n" ); 
         auto_set_dates( &conf, &daterange, mysql, datefrom, dateto );
@@ -1983,7 +1984,8 @@ int main(int argc, char **argv)
 				       printf("%d-%02d-%02d %02d:%02d:%02d %-20s = %.0f %-20s\n", year, month, day, hour, minute, second, returnkeylist[return_key].description, currentpower_total/returnkeylist[return_key].divisor, returnkeylist[return_key].units );
 				       inverter_serial=serial[3]*16777216+serial[2]*65536+serial[1]*256+serial[0];
                                        sprintf( conf.Serial, "%lld", inverter_serial );
-				       live_mysql( &conf, year, month, day, hour, minute, second, conf.Inverter, inverter_serial, returnkeylist[return_key].description, currentpower_total/returnkeylist[return_key].divisor, returnkeylist[return_key].units, debug );
+				       if (mysql == 1)
+					   live_mysql( &conf, year, month, day, hour, minute, second, conf.Inverter, inverter_serial, returnkeylist[return_key].description, currentpower_total/returnkeylist[return_key].divisor, returnkeylist[return_key].units, debug );
                                    }
                                    else
 				       printf("%d-%02d-%02d %02d:%02d:%02d NO DATA for %02x %02x = %.0f NO UNITS\n", year, month, day, hour, minute, second, (data+i+1)[0], (data+i+1)[1], currentpower_total );
